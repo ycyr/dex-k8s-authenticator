@@ -52,7 +52,7 @@ EOF</code></pre>
       <button class="btn" style="float:right" data-clipboard-snippet="">
         <img class="clippy" width="13" src="{{ .Web_Path_Prefix }}static/clippy.svg" alt=""/>
       </button>
-      <pre><code>mkdir -p ${HOME}/.kube/certs/{{ .ClusterName }}/ &amp;&amp; cat &lt;&lt; EOF &gt; ${HOME}/.kube/certs/{{ .ClusterName }}/k8s-ca.crt
+      <pre><code>mkdir -p ${HOME}/.kube/certs/{{ .ClusterName }}/ &amp;&amp; cat &lt;&lt; EOF | base64 -d &gt; ${HOME}/.kube/certs/{{ .ClusterName }}/k8s-ca.crt
 {{ .K8sCaPem }}
 EOF</code></pre>
     </div>
