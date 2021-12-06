@@ -1,6 +1,9 @@
 # Dex K8s Authenticator
 
-A helper web-app which talks to one or more [Dex Identity services](https://github.com/coreos/dex) to generate
+[![golang-lint](https://github.com/mintel/dex-k8s-authenticator/workflows/golangci-lint/badge.svg)](https://github.com/mintel/dex-k8s-authenticator/actions/workflows/golangci-lint.yml)
+[![k8s-lint](https://github.com/mintel/dex-k8s-authenticator/workflows/k8s-lint/badge.svg)](https://github.com/mintel/dex-k8s-authenticator/actions/workflows/k8s.yml)
+
+A helper web-app which talks to one or more [Dex Identity services](https://github.com/dexidp/dex) to generate
 `kubectl` commands for creating and modifying a `kubeconfig`.
 
 The Web UI supports generating tokens against multiple cluster such as Dev / Staging / Production. 

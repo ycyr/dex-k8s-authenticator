@@ -17,9 +17,9 @@ var templates = template.Must(template.ParseGlob("./templates/*.html"))
 func renderIndex(w http.ResponseWriter, config *Config) {
 	t, _ := template.ParseFiles("./templates/index.html")
 	err := t.Execute(w, config)
-
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		http.Error(w, http.StatusText(500), 500)
 	}
 }
 
@@ -43,6 +43,7 @@ type templateData struct {
 	Web_Path_Prefix   string
 	StaticContextName bool
 	KubectlVersion    string
+	Namespace         string
 }
 
 func (cluster *Cluster) renderToken(w http.ResponseWriter,
@@ -86,12 +87,12 @@ func (cluster *Cluster) renderToken(w http.ResponseWriter,
 		LogoURI:           logoURI,
 		Web_Path_Prefix:   webPathPrefix,
 		StaticContextName: cluster.Static_Context_Name,
+		Namespace:         cluster.Namespace,
 		KubectlVersion:    kubectlVersion}
 
-	err = templates.ExecuteTemplate(w, "kubeconfig.html", token_data)
-
-	if err != nil {
-		log.Fatal(err)
+	if err := templates.ExecuteTemplate(w, "kubeconfig.html", token_data); err != nil {
+		log.Println(err)
+		http.Error(w, http.StatusText(500), 500)
 	}
 }
 
@@ -100,10 +101,14 @@ func (cluster *Cluster) renderHTMLError(w http.ResponseWriter, errorMsg string, 
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	w.Header().Set("X-Content-Type-Options", "nosniff")
 	w.WriteHeader(code)
-	templates.ExecuteTemplate(w, "error.html", map[string]string{
+
+	if err := templates.ExecuteTemplate(w, "error.html", map[string]string{
 		"Logo_Uri":          cluster.Config.Logo_Uri,
 		"Web_Path_Prefix":   cluster.Config.Web_Path_Prefix,
 		"Code":              fmt.Sprintf("%d", code),
 		"Error_Description": errorMsg,
-	})
+	}); err != nil {
+		log.Println(err)
+		http.Error(w, http.StatusText(500), 500)
+	}
 }
